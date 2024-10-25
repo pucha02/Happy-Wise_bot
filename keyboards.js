@@ -23,13 +23,11 @@ export const mainMenu = {
 };
 
 export const aboutSchoolMenu = {
- 
     keyboard: [
       [{ text: '📘 Формати навчання' }, { text: '✨ Переваги навчання з нами' }],
       [{ text: '📝 Відгуки' }, { text: '❓ Часті запитання' }],
       [{ text: '🏠 Головне меню' }]
     ]
-  
 };
 
 // Меню теста
@@ -44,3 +42,16 @@ export const testMenuKeyboard = {
   }
 };
 
+export const teachersKeyboard = {
+  reply_markup: {
+    keyboard: [
+      [{ text: 'Ірина' }, { text: 'Олег' }, { text: 'Лоліта' }],
+      [{text: 'Владислава'}, { text: 'Mike' }],
+      [{ text: '🏠 Головне меню' }]
+      
+      // { text: 'Ірина' }
+    //  [{text: 'Юлія'}]
+    ],
+    resize_keyboard: true,
+  },
+};

@@ -1,7 +1,8 @@
 import TelegramBot from 'node-telegram-bot-api';
 import fs from 'fs'
 import path from 'path';
-import { mainMenu, startKeyboard, testMenuKeyboard, aboutSchoolMenu } from './keyboards.js';
+import { mainMenu, startKeyboard, testMenuKeyboard, aboutSchoolMenu, teachersKeyboard } from './keyboards.js';
+import { teacherDescriptions, sendTeacherInfo } from './sendTeacherInfo.js';
 import { sendToKeyCRM } from './sendToKeyCRM.js';
 import { sendQuestion } from './sendQuestion.js';
 import { setBotCommands } from './setBotCommands.js';
@@ -62,7 +63,6 @@ bot.onText(/Формати навчання/, async (msg) => {
     { parse_mode: 'HTML' }  // Указываем, что используем HTML
   );
 });
-
 ////////////////////// Формати навчання
 
 ////////////////////// Переваги навчання з нами
@@ -142,6 +142,27 @@ bot.onText(/Відгуки/, async (msg) => {
 });
 ////////////////////// Відгуки
 
+////////////////////// Вчителі
+// Обробник для показу списку вчителів
+bot.onText(/Наші вчителі/, async (msg) => {
+  const chatId = msg.chat.id;
+
+  // Відправляємо клавіатуру з вибором вчителів
+  await bot.sendMessage(chatId, 'Будь ласка, оберіть викладача зі списку👇', teachersKeyboard);
+});
+
+// Обробник для відстеження вибору вчителя
+bot.on('message', async (msg) => {
+  const chatId = msg.chat.id;
+  const teacherName = msg.text.trim(); // Очищуємо текст від зайвих пробілів
+
+  // Якщо ім'я вчителя є в списку, відправляємо фото і опис
+  if (teacherDescriptions[teacherName]) {
+    sendTeacherInfo(chatId, teacherName, bot);
+  }
+});
+////////////////////// Вчителі
+
 ////////////////////// TECT
 bot.onText(/Перевірити свій рівень/, async (msg) => {
   const chatId = msg.chat.id;
@@ -188,7 +209,7 @@ bot.on('message', async (msg) => {
 });
 ////////////////////// TECT
 
-bot.onText(/📞 Зв'язатися із менеджером /, (msg) => {
+bot.onText(/Зв'язатися із менеджером/, (msg) => {
   bot.sendMessage(msg.chat.id, "Будь ласка, надішліть ваше ім'я та контактний номер телефону.");
 
   bot.once('message', (contactMsg) => {
