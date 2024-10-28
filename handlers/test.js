@@ -6,9 +6,11 @@ const isTakingTest = {};
 const currentQuestion = {};
 const countTrueAnswers = {};
 
-export function testHandler(bot) {
+export function testHandler(bot, updateLastInteractionTime) {
   bot.onText(/Перевірити свій рівень/, async (msg) => {
     const chatId = msg.chat.id;
+    await updateLastInteractionTime(chatId);
+
     await bot.sendMessage(chatId, 'Обирайте кнопками, що цікавить👇', testMenuKeyboard);
   });
 

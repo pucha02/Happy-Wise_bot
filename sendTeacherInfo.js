@@ -2,87 +2,72 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// Getting __dirname in ES Module
+// Для получения __dirname в ES-модулях
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Teacher Photos (relative paths)
-export const teacherPhotos = {
-  'Ірина Азаренко': path.join(__dirname, 'handlers/images', 'v1.jpg'),
-  'Ірина Вергун': path.join(__dirname, 'handlers/images', 'Iryna_Vergun.jpg'),
-  'Олег': path.join(__dirname, 'handlers/images', 'Oleg.jpg'),
-  'Лоліта': path.join(__dirname, 'handlers/images', 'Lolita.jpg'),
-  'Владислава': path.join(__dirname, 'handlers/images', 'Vladyslava.jpg'),
-  'Mike': path.join(__dirname, 'handlers/images', 'Mike_Wilson.jpg'),
+// Загрузка фото учителей с использованием относительных путей
+const teacherPhotos = {
+  'Ірина Азаренко': path.join(__dirname, 'images', 'Irina_Azarenro.jpg'),
+  'Ірина Вергун': path.join(__dirname, 'images', 'Iryna_Vergun.jpg'),
+  'Олег': path.join(__dirname, 'images', 'Oleg.jpg'),
+  'Лоліта': path.join(__dirname, 'images', 'Lolita.jpg'),
+  'Владислава': path.join(__dirname, 'images', 'Vladyslava.jpg'),
+  'Mike': path.join(__dirname, 'images', 'Mike_Wilson.jpg'),
 };
 
-// Teacher Descriptions
+// Описание учителей
 export const teacherDescriptions = {
   'Ірина Азаренко': `
-🎓 *Засновниця школи "Happy&Wise"*
-📚 Викладає у групах та індивідуально
-💼 *Business English*
-🌍 Проводить онлайн та офлайн *Business Speaking clubs*
-🎯 Мотивує студентів щодня на *Розмовних челенджах*
+  🎓 <b>Засновниця школи "Happy&Wise"</b>\n
+  📚 Викладає у групах та індивідуально\n
+  💼 <b>Business English</b>\n
+  🌍 Проводить онлайн та офлайн <b>Business Speaking clubs</b>\n
+  🎯 Мотивує студентів щодня на <b>Розмовних челенджах</b>
   `,
   'Ірина Вергун': `
-👩‍🏫 *Викладачка*
-📚 Викладає у групах, парах та індивідуально
-👥 Навчає школярів, дорослих та підлітків.
+  👩‍🏫 <b>Викладачка</b>\n
+  👥 Працює з дорослими та школярами індивідуально, в групах та парах\n
+  🎯 Готує до НМТ та ЄВІ\n
+  🗣️ Проводить <b>Speaking clubs</b>
   `,
   'Олег': `
-👨‍🏫 *Викладач*
-👥 Працює з дорослими індивідуально, в групах та парах
+  👨‍🏫 <b>Викладач</b>\n
+  👥 Працює з дорослими індивідуально, в групах та парах
   `,
   'Лоліта': `
-👩‍🏫 *Викладачка*
-👥 Працює з дорослими та школярами індивідуально, в групах та парах
-🎯 Готує до НМТ та ЄВІ
-🗣️ Проводить *Speaking clubs*
+  👩‍🏫 <b>Викладачка</b>\n
+  👥 Працює з дорослими та школярами індивідуально, в групах та парах\n
+  🎯 Готує до НМТ та ЄВІ\n
+  🗣️ Проводить <b>Speaking clubs</b>
   `,
   'Владислава': `
-👩‍🏫 *Викладачка*
-👥 Працює з дорослими та підлітками у групах, парах та індивідуально
-🎯 Готує до НМТ та ЄВІ
-🗣️ Проводить *Speaking clubs*
+  👩‍🏫 <b>Викладачка</b>\n
+  👥 Працює з дорослими та підлітками у групах, парах та індивідуально\n
+  🎯 Готує до НМТ та ЄВІ\n
+  🗣️ Проводить <b>Speaking clubs</b>
   `,
   'Mike': `
-🇬🇧 *Native speaker*
-👥 Працює у групах та індивідуально зі студентами рівня B1
-💼 *Business English*
+  🇬🇧 <b>Native speaker</b>\n
+  👥 Працює у групах та індивідуально зі студентами рівня B1\n
+  💼 <b>Business English</b>
   `,
 };
 
-// Function to send teacher info with photo and description
+// Функция для отправки фото и описания учителя
 export function sendTeacherInfo(chatId, teacherName, bot) {
   const photoPath = teacherPhotos[teacherName];
   const description = teacherDescriptions[teacherName];
 
   if (photoPath && description) {
-    try {
-      const photoStream = fs.createReadStream(photoPath);
-      bot.sendPhoto(chatId, photoStream, {
-        caption: description.trim(), // Removes potential leading/trailing whitespace
-        parse_mode: 'Markdown',
-      });
-    } catch (error) {
-      console.error(`Error sending photo: ${error.message}`);
-      bot.sendMessage(chatId, 'Не вдалося надіслати інформацію про вчителя.');
-    }
+    const photoStream = fs.createReadStream(photoPath);
+    bot.sendPhoto(chatId, photoStream, {
+      caption: description,
+      parse_mode: 'HTML',  // Меняем Markdown на HTML для совместимости с тегами <b>
+    });
   } else {
     bot.sendMessage(chatId, 'Вчитель не знайдений.');
   }
 }
 
-// Persistent Teachers Keyboard
-export const teachersKeyboard = {
-  reply_markup: {
-    keyboard: [
-      [{ text: 'Ірина Азаренко' }],
-      [{ text: 'Ірина Вергун' }, { text: 'Олег' }, { text: 'Лоліта' }],
-      [{ text: 'Владислава' }, { text: 'Mike' }],
-    ],
-    resize_keyboard: true,
-    one_time_keyboard: false, // Ensures it stays on all screens
-  },
-};
+

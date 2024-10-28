@@ -1,18 +1,20 @@
 import fs from 'fs';
 
-export function reviewsHandler(bot) {
+export function reviewsHandler(bot, updateLastInteractionTime) {
   bot.onText(/Відгуки/, async (msg) => {
     const chatId = msg.chat.id;
+    await updateLastInteractionTime(chatId);
+
     const photos = [
-        'handlers/images/image.png',
-        'handlers/images/v2.webp',
-        'handlers/images/v3.webp',
-        'handlers/images/v4.webp',
-        'handlers/images/v5.webp',
-        'handlers/images/v6.webp',
-        'handlers/images/v7.webp',
-        'handlers/images/v8.webp',
-        'handlers/images/v9.webp'
+        'images/image.png',
+        'images/v2.webp',
+        'images/v3.webp',
+        'images/v4.webp',
+        'images/v5.webp',
+        'images/v6.webp',
+        'images/v7.webp',
+        'images/v8.webp',
+        'images/v9.webp'
       ];
 
     for (const photo of photos) {

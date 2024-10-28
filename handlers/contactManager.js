@@ -1,9 +1,9 @@
 import { sendToKeyCRM } from '../sendToKeyCRM.js';
 
-export function contactManagerHandler(bot) {
-  bot.onText(/Зв'язатися із менеджером/, (msg) => {
+export function contactManagerHandler(bot, updateLastInteractionTime) {
+  bot.onText(/Зв'язатися із менеджером/, async (msg) => {
     bot.sendMessage(msg.chat.id, "Будь ласка, надішліть ваше ім'я та контактний номер телефону.");
-
+    await updateLastInteractionTime(msg.chat.id);
     bot.once('message', (contactMsg) => {
       const contactInfo = contactMsg.text.split(',');
       if (contactInfo.length < 2) {
