@@ -1,10 +1,11 @@
 import axios from 'axios';
 
-const keycrmApiToken = 'Njk0OWFjNWE4ZmI5YjRmOGYyNTM0ZmVhZjg4M2UxYzY5YWYxZjAzMg';
+// Наша CRM Njk0OWFjNWE4ZmI5YjRmOGYyNTM0ZmVhZjg4M2UxYzY5YWYxZjAzMg
+const keycrmApiToken = 'MWJlODYwNDRmMzc2ZTA0MWEwNTE5ODFkNzIwMDU5MWNjMDU0MjM2YQ';
 const keycrmApiUrl = 'https://openapi.keycrm.app/v1/pipelines/cards';
 
-const pipelineId = 14;
-const statusId = 183;
+const pipelineId = 5;
+const statusId = 77;
 
 export async function sendToKeyCRM(contactInfo) {
   try {
@@ -13,7 +14,7 @@ export async function sendToKeyCRM(contactInfo) {
       {
         title: `${contactInfo.full_name}`,
         source_id: 1,
-        manager_comment: 'New contact from Telegram bot',
+        manager_comment: `${contactInfo.chatId}`,
         manager_id: 1,
         pipeline_id: pipelineId, 
         status_id: statusId,

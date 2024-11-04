@@ -1,4 +1,4 @@
-const keycrmApiToken = 'Njk0OWFjNWE4ZmI5YjRmOGYyNTM0ZmVhZjg4M2UxYzY5YWYxZjAzMg';
+const keycrmApiToken = 'MWJlODYwNDRmMzc2ZTA0MWEwNTE5ODFkNzIwMDU5MWNjMDU0MjM2YQ';
 const keycrmApiUrl = 'https://app.keycrm.app/api/v2/leads';
 
 
@@ -7,7 +7,7 @@ const headers = {
     'Authorization': `Bearer ${keycrmApiToken}`,
   };
 
-fetch('https://openapi.keycrm.app/v1/pipelines/15/statuses', {headers})
+fetch('https://openapi.keycrm.app/v1/pipelines/5/statuses', {headers})
 .then(response => response.json())
     .then(data => {
         console.log(data);

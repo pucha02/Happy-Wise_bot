@@ -13,10 +13,12 @@ import { reviewsHandler } from './handlers/reviews.js';
 import { teachersHandler } from './handlers/teachers.js';
 import { studyHandler } from './handlers/study.js';
 import { testHandler } from './handlers/test.js';
-import { contactManagerHandler } from './handlers/contactManager.js';
+import { contactManagerHandler } from './handlers/test.js';
 import { setBotCommands } from './setBotCommands.js';
 import { sendPackageInfoHandler } from './handlers/sendPackageInfoHandler.js';
 import { updateLastInteractionTime } from './controllers/interactionController.js';
+import { sendBonus } from './handlers/bonus.js';
+
 
 const token = '8093162300:AAERaFyiqaWZn_mkAwtyYtd9epPHNvSFX0s';
 const mongoUri = 'mongodb+srv://happyandwisebot:eXIjqBpLsvyxbymy@cluster0.npvxl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
@@ -41,18 +43,20 @@ studyHandler(bot, updateLastInteractionTime);
 testHandler(bot, updateLastInteractionTime);
 contactManagerHandler(bot, updateLastInteractionTime);
 sendPackageInfoHandler(bot, updateLastInteractionTime);
+sendBonus(bot)
 
-// Настройка и запуск Express
 const app = express();
 const PORT = process.env.PORT || 5000;
 app.use(bodyParser.json());
 
-// Пример маршрута для API
 app.get('/api/users', (req, res) => {
   res.json({ message: 'Список пользователей' });
 });
 
-// Запуск Express-сервера
+app.post('/api/keycrm', (req, res) => {
+  console.log(req.body)
+});
+
 app.listen(PORT, () => {
   console.log(`Express сервер запущен на порту ${PORT}`);
 });
