@@ -5,7 +5,7 @@ export function startHandler(bot, updateLastInteractionTime) {
   bot.onText(/\/start/, async (msg) => {
     const chatId = msg.chat.id;
     const { first_name, last_name, username, phone } = msg.chat;
-  
+    
     // Сохраняем или обновляем данные пользователя в БД
     try {
       await UserInteraction.findOneAndUpdate(
@@ -20,8 +20,12 @@ export function startHandler(bot, updateLastInteractionTime) {
     // Обновляем время последнего взаимодействия
     await updateLastInteractionTime(chatId, 'start_command');
   
-    await bot.sendMessage(chatId, 'Привіт! Я бот-асистент школи Happy&Wise. Радий допомогти вам на шляху до вивчення англійської мови!');
-    await bot.sendMessage(chatId, "Ми розробили спеціальну методику для визначення вашого рівня володіння англійською, щоб підібрати найкращий план навчання для вас. Наступним кроком пропоную пройти невеликий тест, після якого ви зможете залишити свої контакти, і ми зв'яжемося з вами для обговорення результатів та подальших кроків.");
-    await bot.sendMessage(chatId, 'Готові розпочати тест?', startKeyboard);
+    await bot.sendMessage(chatId, 
+`Привіт👋\nЯ бот-асистент школи Happy&Wise.🦉\nРадий допомогти вам на шляху до вивчення англійської мови!`);
+    await bot.sendMessage(chatId,
+
+`Ми розробили спеціальну методику для визначення Вашого рівня володіння англійською, щоб підібрати найкращий план навчання для Вас.\nНаступним кроком пропоную пройти невеликий тест, після якого Ви зможете залишити свої контакти, а наш менеджер зв'яжеться з Вами для обговорення результатів та подальших кроків 🤝`);
+
+    await bot.sendMessage(chatId, 'Готові розпочати тест 🤔?', startKeyboard);
   });
 }

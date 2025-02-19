@@ -3,7 +3,7 @@ import { sendToKeyCRM } from '../sendToKeyCRM.js';
 export function contactManagerHandler(bot, updateLastInteractionTime, levelStats) {
   const awaitingContactInfo = {};
 
-  bot.onText(/Зв'язатися із менеджером/, async (msg) => {
+  bot.onText(/Запис на безкоштовне пробне/, async (msg) => {
     const chatId = msg.chat.id;
     awaitingContactInfo[chatId] = true;  // Устанавливаем флаг для ожидания данных
     await bot.sendMessage(chatId, "Будь ласка, надішліть ваше ім'я та контактний номер телефону у форматі: Ім'я, Телефон.");

@@ -2,8 +2,8 @@ import { testMenuKeyboard } from '../keyboards.js';
 import { questions } from '../questionsForTEst.js';
 import { sendQuestion } from '../sendQuestion.js';
 import { sendToKeyCRM } from '../sendToKeyCRM.js';
+import { isTakingTest } from '../testState.js';
 
-const isTakingTest = {};
 const currentQuestion = {};
 const countTrueAnswers = {};
 const levelStats = {};
@@ -27,15 +27,25 @@ export function testHandler(bot, updateLastInteractionTime) {
     countTrueAnswers[chatId] = 0;
     levelStats[chatId] = levelEndings.map((_, i) => ({ level: levelNames[i], correct: 0, total: 0 }));
 
-    await bot.sendMessage(chatId, 'Починаємо тест з англійської! Для виходу з тесту натисніть кнопку "Вийти з тесту".');
+    await bot.sendMessage(chatId,
+      `Починаємо тест з англійської!
+
+Надайте відповіді на питання ✅
+
+Для того, щоб припинити проходження тесту натисніть кнопку "❌ Вийти з тесту"`);
     sendQuestion(chatId, questions, currentQuestion, bot);
   });
 
   bot.on('message', async (msg) => {
     const chatId = msg.chat.id;
-    if (msg.text === 'Вийти з тесту') {
+    if (msg.text === '❌ Вийти з тесту') {
       isTakingTest[chatId] = false;
       await bot.sendMessage(chatId, 'Ви успішно вийшли з тесту.', testMenuKeyboard);
+      return;
+    }
+
+    if (msg.text === '/start') {
+      isTakingTest[chatId] = false;
       return;
     }
 
@@ -57,7 +67,42 @@ export function testHandler(bot, updateLastInteractionTime) {
         if (accuracy < requiredAccuracy) {
           const reachedLevel = levelNames[levelIndex - 1];
           const reachedLevelall = levelNames[levelIndex];
+          if (levelIndex > 1) {
+            const testMenuKeyboard = {
+              reply_markup: {
+                keyboard: [
+                  [{ text: "📞 Запис на безкоштовне пробне" }, { text: '📝 Почати тест' }],
+                  [{ text: '🗣️ Speaking Club' }],
+                  [{ text: '🏠 Головне меню' }]
+                ],
+                resize_keyboard: true,
+                one_time_keyboard: false
+              }
+            };
+            
+            await bot.sendMessage(
+              chatId,
+              `Ваш рівень: ${reachedLevel}. Ви відповіли правильно на менше ${Math.round(requiredAccuracy * 100)}% питань рівня ${reachedLevelall}.`,
+              testMenuKeyboard
+            );
+
+            await bot.sendMessage(
+              chatId,
+              `Чудово, у вас вже є певний рівень знань! Ми можемо допомогти вам покращити його ще більше. Натисніть кнопку  "📞 Зв'язатися із менеджером", щоб підібрати курс, який допоможе вам досягти нових висот у вивченні англійської мови!`,
+              testMenuKeyboard
+            );
+            await bot.sendMessage(
+              chatId,
+              `Долучайтеся до нашого`,
+              testMenuKeyboard
+            );
+            sendLevelSummary(chatId, bot, levelIndex);
+            isTakingTest[chatId] = false;
+            return;
+          }
           if (levelIndex > 0) {
+
+
             await bot.sendMessage(
               chatId,
               `Ваш рівень: ${reachedLevel}. Ви відповіли правильно на менше ${Math.round(requiredAccuracy * 100)}% питань рівня ${reachedLevelall}.`,
@@ -145,46 +190,113 @@ const sendLevelSummary = async (chatId, bot, lastCompletedLevelIndex) => {
 
 
 export function contactManagerHandler(bot, updateLastInteractionTime) {
-  const awaitingContactInfo = {};
+  const awaitingContactInfo = {}; // Объект для хранения состояния ожидания ввода пользователя
 
   bot.onText(/Зв'язатися із менеджером/, async (msg) => {
     const chatId = msg.chat.id;
-    awaitingContactInfo[chatId] = true;  // Устанавливаем флаг для ожидания данных
-    await bot.sendMessage(chatId, "Будь ласка, надішліть ваше ім'я та контактний номер телефону у форматі: Ім'я, Телефон.");
+
+    awaitingContactInfo[chatId] = { step: 1, canceled: false };  // Устанавливаем начальный шаг ожидания
+    await bot.sendMessage(chatId, "Будь ласка, надішліть ваше ім'я. \n\nЯкщо бажаєте скасувати введення даних, уведіть та відправте команду '/cancel' (або оберіть у меню зліва від поля введення)");
+    await updateLastInteractionTime(chatId);
+  });
+
+  bot.onText(/\/cancel/, async (msg) => {
+    const chatId = msg.chat.id;
+
+    if (awaitingContactInfo[chatId]) {
+      awaitingContactInfo[chatId].canceled = true;  // Устанавливаем флаг отмены
+      await bot.sendMessage(chatId, "Дію скасовано. Якщо хочете почати знову, натисніть 'Зв'язатися із менеджером'.");
+    }
     await updateLastInteractionTime(chatId);
   });
 
   bot.on('message', async (msg) => {
     const chatId = msg.chat.id;
-  
+    if (msg.text === '/cancel') {
+      delete awaitingContactInfo[chatId];
+      await bot.sendMessage(chatId, "Дію скасовано");
+      return;
+    }
+
+    if (msg.text === '🏫 Про школу' || msg.text === '👨‍🏫 Наші вчителі' || msg.text === '📚 Навчання' || msg.text === '📝 Перевірити свій рівень' || msg.text === '🎁 Бонус' || msg.text === "📞 Зв'язатися із менеджером" || msg.text === '🗣️ Speaking Club' || msg.text === '💬 Розмовний челендж') {
+      delete awaitingContactInfo[chatId];
+      return;
+    }
+    // Проверяем, ожидаем ли мы данные от пользователя
     if (awaitingContactInfo[chatId]) {
-      const contactInfo = msg.text.split(',');
-  
-      if (contactInfo.length < 2) {
-        await bot.sendMessage(chatId, "Будь ласка, введіть дані у форматі: Ім'я, Телефон.");
-      } else {
-        const fullName = contactInfo[0].trim();
-        const phone = contactInfo[1].trim();
-  
-        // Получаем уровень клиента по последнему завершенному уровню
-        const lastLevelIndex = levelStats[chatId].findLastIndex(stat => stat.total > 0);
-        const clientLevel = lastLevelIndex > 0 && lastLevelIndex < 4 ? levelNames[lastLevelIndex - 1] : lastLevelIndex == 0 ? 'Не пройшов 1 рівень' : lastLevelIndex >= 4 ? levelNames[lastLevelIndex] : 'Не визначено';
-  
+      const state = awaitingContactInfo[chatId];
+
+      // Прекращаем обработку, если действие было отменено
+      if (state.canceled) {
+        delete awaitingContactInfo[chatId];
+        return;
+      }
+
+      if (state.step === 1) {
+        // Шаг 1: Получаем имя пользователя
+        const fullName = msg.text.trim();
+
+        // Проверка, что имя не пустое
+        if (!fullName) {
+          await bot.sendMessage(chatId, "Будь ласка, введіть коректне ім'я.");
+          return;
+        }
+
+        state.fullName = fullName;  // Сохраняем имя в состоянии
+        state.step = 2;             // Переходим к следующему шагу
+
+        // Проверяем, отменено ли действие перед отправкой следующего сообщения
+        if (!state.canceled) {
+          await bot.sendMessage(chatId, "Дякую! Тепер надішліть ваш номер телефону.");
+        }
+
+      } else if (state.step === 2) {
+        // Шаг 2: Получаем номер телефона пользователя
+        const phone = msg.text.trim();
+
+        // Проверка, что номер телефона введен корректно
+        const phoneRegex = /^[\d\+\-\(\)\s]+$/;
+        if (!phoneRegex.test(phone)) {
+          await bot.sendMessage(chatId, "Будь ласка, введіть коректний номер телефону.");
+          return;
+        }
+
+        state.phone = phone;  // Сохраняем номер телефона
+
+        // Проверяем, есть ли уровень пользователя
+        const hasStats = levelStats[chatId] && levelStats[chatId].some(stat => stat.total > 0);
+        let clientLevel = '';
+        if (hasStats) {
+          const lastLevelIndex = levelStats[chatId].findLastIndex(stat => stat.total > 0);
+          clientLevel = lastLevelIndex > 0 && lastLevelIndex < 4
+            ? levelNames[lastLevelIndex - 1]
+            : lastLevelIndex === 0
+              ? 'Не пройшов 1 рівень'
+              : lastLevelIndex >= 4
+                ? levelNames[lastLevelIndex]
+                : 'Не визначено';
+        }
+
+        // Формируем данные для отправки
         const contactData = {
-          full_name: `${fullName} ${clientLevel}`,
-          level: clientLevel,
-          phone: phone,
+          full_name: hasStats ? `${state.fullName} (${clientLevel})` : state.fullName,
+          phone: state.phone,
           chatId: chatId
         };
-  
-        // Отправляем подтверждение с уровнем
-        await bot.sendMessage(chatId, `Дякую! Ми зв'яжемося з вами за наступним номером: ${phone}`);
-        awaitingContactInfo[chatId] = false;  // Убираем флаг ожидания
-  
+
+        // Отправляем подтверждение с уровнем, если он есть
+        const responseMessage = hasStats
+          ? `Дякую! Ми зв'яжемося з вами за наступним номером: ${state.phone}`
+          : `Дякую! Ми зв'яжемося з вами за наступним номером: ${state.phone}`;
+
+        await bot.sendMessage(chatId, responseMessage);
+
+        // Отправляем данные в CRM и сбрасываем состояние ожидания
         sendToKeyCRM(contactData);
+        delete awaitingContactInfo[chatId];
       }
+
       await updateLastInteractionTime(chatId);
     }
   });
-  
-}
+}  
