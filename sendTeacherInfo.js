@@ -82,7 +82,7 @@ export function sendTeacherInfo(chatId, teacherName, bot) {
         parse_mode: 'HTML',
       });
     } else if (['.mp4', '.mov'].includes(fileExt)) {
-      bot.sendVideo(chatId, fileStream, {
+      bot.sendPhoto(chatId, fileStream, {
         caption: description,
         parse_mode: 'HTML',
       });
