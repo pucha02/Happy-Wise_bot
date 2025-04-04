@@ -205,7 +205,7 @@ export function contactManagerHandler(bot, updateLastInteractionTime) {
 
     if (awaitingContactInfo[chatId]) {
       awaitingContactInfo[chatId].canceled = true;  // Устанавливаем флаг отмены
-      await bot.sendMessage(chatId, "Дію скасовано. Якщо хочете почати знову, натисніть 'Зв'язатися із менеджером'.");
+      await bot.sendMessage(chatId, "Дію скасовано. Якщо хочете почати знову, натисніть 'Запис на безкоштовне пробне'.");
     }
     await updateLastInteractionTime(chatId);
   });
@@ -218,7 +218,7 @@ export function contactManagerHandler(bot, updateLastInteractionTime) {
       return;
     }
 
-    if (msg.text === '🏫 Про школу' || msg.text === '👨‍🏫 Наші вчителі' || msg.text === '📚 Навчання' || msg.text === '📝 Перевірити свій рівень' || msg.text === '🎁 Бонус' || msg.text === "📞 ЗЗапис на безкоштовне пробне" || msg.text === '🗣️ Speaking Club' || msg.text === '💬 Розмовний челендж') {
+    if (msg.text === '🏫 Про школу' || msg.text === '👨‍🏫 Наші вчителі' || msg.text === '📚 Навчання' || msg.text === '📝 Перевірити свій рівень' || msg.text === '🎁 Бонус' || msg.text === "📞 Запис на безкоштовне пробне" || msg.text === '🗣️ Speaking Club' || msg.text === '💬 Розмовний челендж') {
       delete awaitingContactInfo[chatId];
       return;
     }

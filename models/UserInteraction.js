@@ -6,7 +6,7 @@ const userInteractionSchema = new mongoose.Schema({
   chat_id: { type: Number, required: true, unique: true },
   initial_contact_time: { type: Date, default: Date.now },
   last_interaction_time: { type: Date, default: Date.now },
-  interaction_type: { type: String }, // Поле для хранения типа взаимодействия (например, 'Зв'язатися із менеджером')
+  interaction_type: { type: String }, // Поле для хранения типа взаимодействия (например, 'Запис на безкоштовне пробне')
 });
 
 const UserInteraction = mongoose.model('UserInteraction', userInteractionSchema);
