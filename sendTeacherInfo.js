@@ -69,18 +69,30 @@ export const teacherDescriptions = {
 
 // Функция для отправки фото и описания учителя
 export function sendTeacherInfo(chatId, teacherName, bot) {
-  const photoPath = teacherPhotos[teacherName];
+  const filePath = teacherPhotos[teacherName];
   const description = teacherDescriptions[teacherName];
 
-  if (photoPath && description) {
-    const photoStream = fs.createReadStream(photoPath);
-    bot.sendPhoto(chatId, photoStream, {
-      caption: description,
-      parse_mode: 'HTML',  // Меняем Markdown на HTML для совместимости с тегами <b>
-    });
+  if (filePath && description) {
+    const fileStream = fs.createReadStream(filePath);
+    const fileExt = path.extname(filePath).toLowerCase();
+
+    if (['.jpg', '.jpeg', '.png'].includes(fileExt)) {
+      bot.sendPhoto(chatId, fileStream, {
+        caption: description,
+        parse_mode: 'HTML',
+      });
+    } else if (['.mp4', '.mov'].includes(fileExt)) {
+      bot.sendVideo(chatId, fileStream, {
+        caption: description,
+        parse_mode: 'HTML',
+      });
+    } else {
+      bot.sendMessage(chatId, 'Формат файлу не підтримується.');
+    }
   } else {
     bot.sendMessage(chatId, 'Вчитель не знайдений.');
   }
 }
+
 
 
