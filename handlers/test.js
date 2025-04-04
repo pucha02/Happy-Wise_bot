@@ -88,7 +88,7 @@ export function testHandler(bot, updateLastInteractionTime) {
 
             await bot.sendMessage(
               chatId,
-              `Чудово, у вас вже є певний рівень знань! Ми можемо допомогти вам покращити його ще більше. Натисніть кнопку  "📞 Зв'язатися із менеджером", щоб підібрати курс, який допоможе вам досягти нових висот у вивченні англійської мови!`,
+              `Чудово, у вас вже є певний рівень знань! Ми можемо допомогти вам покращити його ще більше. Натисніть кнопку  "📞 Запис на безкоштовне пробне", щоб підібрати курс, який допоможе вам досягти нових висот у вивченні англійської мови!`,
               testMenuKeyboard
             );
             await bot.sendMessage(
@@ -111,7 +111,7 @@ export function testHandler(bot, updateLastInteractionTime) {
 
             await bot.sendMessage(
               chatId,
-              `Чудово, у вас вже є певний рівень знань! Ми можемо допомогти вам покращити його ще більше. Натисніть кнопку  "📞 Зв'язатися із менеджером", щоб підібрати курс, який допоможе вам досягти нових висот у вивченні англійської мови!`,
+              `Чудово, у вас вже є певний рівень знань! Ми можемо допомогти вам покращити його ще більше. Натисніть кнопку  "📞 Запис на безкоштовне пробне", щоб підібрати курс, який допоможе вам досягти нових висот у вивченні англійської мови!`,
               testMenuKeyboard
             );
 
@@ -126,7 +126,7 @@ export function testHandler(bot, updateLastInteractionTime) {
             );
             await bot.sendMessage(
               chatId,
-              `Не засмучуйтесь! Ви завжди можете натиснути кнопку  "📞 Зв'язатися із менеджером", і ми допоможемо підібрати для вас курс, на якому ви обов'язково досягнете своєї мети у вивченні англійської мови!`,
+              `Не засмучуйтесь! Ви завжди можете натиснути кнопку  "📞 Запис на безкоштовне пробне", і ми допоможемо підібрати для вас курс, на якому ви обов'язково досягнете своєї мети у вивченні англійської мови!`,
               testMenuKeyboard
             );
             sendLevelSummary(chatId, bot, levelIndex);
@@ -154,7 +154,7 @@ export function testHandler(bot, updateLastInteractionTime) {
 
           await bot.sendMessage(
             chatId,
-            `Натисніть 📞 "Зв'язатися із менеджером", щоб дізнатися більше про програми, які допоможуть вам досягти нових висот у володінні англійською! Ми підберемо курс, що підходить саме вам.`,
+            `Натисніть 📞 "Запис на безкоштовне пробне", щоб дізнатися більше про програми, які допоможуть вам досягти нових висот у володінні англійською! Ми підберемо курс, що підходить саме вам.`,
             testMenuKeyboard
           );
 
@@ -192,7 +192,7 @@ const sendLevelSummary = async (chatId, bot, lastCompletedLevelIndex) => {
 export function contactManagerHandler(bot, updateLastInteractionTime) {
   const awaitingContactInfo = {}; // Объект для хранения состояния ожидания ввода пользователя
 
-  bot.onText(/Зв'язатися із менеджером/, async (msg) => {
+  bot.onText(/Запис на безкоштовне пробне/, async (msg) => {
     const chatId = msg.chat.id;
 
     awaitingContactInfo[chatId] = { step: 1, canceled: false };  // Устанавливаем начальный шаг ожидания
@@ -218,7 +218,7 @@ export function contactManagerHandler(bot, updateLastInteractionTime) {
       return;
     }
 
-    if (msg.text === '🏫 Про школу' || msg.text === '👨‍🏫 Наші вчителі' || msg.text === '📚 Навчання' || msg.text === '📝 Перевірити свій рівень' || msg.text === '🎁 Бонус' || msg.text === "📞 Зв'язатися із менеджером" || msg.text === '🗣️ Speaking Club' || msg.text === '💬 Розмовний челендж') {
+    if (msg.text === '🏫 Про школу' || msg.text === '👨‍🏫 Наші вчителі' || msg.text === '📚 Навчання' || msg.text === '📝 Перевірити свій рівень' || msg.text === '🎁 Бонус' || msg.text === "📞 ЗЗапис на безкоштовне пробне" || msg.text === '🗣️ Speaking Club' || msg.text === '💬 Розмовний челендж') {
       delete awaitingContactInfo[chatId];
       return;
     }
