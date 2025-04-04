@@ -218,7 +218,7 @@ bot.on('message', async (msg) => {
 });
 ////////////////////// TECT
 
-bot.onText(/Зв'язатися із менеджером/, (msg) => {
+bot.onText(/Запис на безкоштовне пробне/, (msg) => {
   bot.sendMessage(msg.chat.id, "Будь ласка, надішліть ваше ім'я та контактний номер телефону.");
 
   bot.once('message', (contactMsg) => {
