@@ -14,7 +14,7 @@ export const mainMenu = {
     keyboard: [
       [{ text: '🏫 Про школу' }, { text: '👨‍🏫 Наші вчителі' }],
       [{ text: '📚 Навчання' }, { text: '📝 Перевірити свій рівень' }],
-      [{ text: '🎁 Бонус' }, { text: "📞 Запис на безкоштовне пробне" }],
+      [{ text: '🎁 Бонус' }, { text: "📞 Запис на пробне" }],
       [{ text: '🗣️ Speaking Club', url: 'https://t.me/Speaking_club_happyandwise' }, { text: '💬 Розмовний челендж', url: 'https://t.me/+sRa4QGV8osBkZjky' }],
     ],
     resize_keyboard: true,
@@ -34,7 +34,7 @@ export const aboutSchoolMenu = {
 export const testMenuKeyboard = {
   reply_markup: {
     keyboard: [
-      [{ text: "📞 Запис на безкоштовне пробне" }, { text: '📝 Почати тест' }],
+      [{ text: "📞 Запис на пробне" }, { text: '📝 Почати тест' }],
       [{ text: '🏠 Головне меню' }]
     ],
     resize_keyboard: true,
