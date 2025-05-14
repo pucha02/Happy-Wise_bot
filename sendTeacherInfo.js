@@ -82,9 +82,11 @@ export function sendTeacherInfo(chatId, teacherName, bot) {
         parse_mode: 'HTML',
       });
     } else if (['.mp4', '.mov'].includes(fileExt)) {
-      bot.sendPhoto(chatId, fileStream, {
+      bot.sendVideo(chatId, fileStream, {
         caption: description,
         parse_mode: 'HTML',
+width: 720,
+  height: 1280,
       });
     } else {
       bot.sendMessage(chatId, 'Формат файлу не підтримується.');
